@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LOYING TECH SERVICE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#eef2f5;
+}
+.container{
+  max-width:420px;
+  background:#fff;
+  padding:20px;
+  margin:40px auto;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+input, select, button{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+}
+button{
+  background:#0a58ca;
+  color:#fff;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+button:disabled{
+  background:gray;
+}
+.popup{
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,.6);
+}
+.popup-content{
+  background:#fff;
+  width:90%;
+  max-width:380px;
+  margin:15% auto;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+}
+.timer{color:red;font-weight:bold}
+a{text-decoration:none;color:#0a58ca}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>LOYING TECH SERVICE</h2>
+
+<input type="text" id="name" placeholder="Your Name">
+<select id="websiteType">
+  <option value="">Select Website Type</option>
+  <option>School</option>
+  <option>Business</option>
+  <option>Institute</option>
+  <option>Shop</option>
+</select>
+<input type="tel" id="phone" placeholder="Phone Number">
+<input type="email" id="email" placeholder="Email ID">
+
+<button onclick="saveDetails()">Save</button>
+<button id="nextBtn" onclick="openQR()" disabled>Next</button>
+
+<hr>
+📧 <a href="mailto:jituloying1947@gmail.com">jituloying1947@gmail.com</a><br>
+📞 <a href="tel:7896220943">7896220943</a>
+</div>
+
+<!-- QR POPUP -->
+<div class="popup" id="qrPopup">
+  <div class="popup-content">
+    <h3>Pay ₹550 Advance</h3>
+
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=jituloying1947@axl&pn=LOYING%20TECH&am=550">
+
+    <p class="timer" id="timer">02:00</p>
+
+    <input id="txn" placeholder="Transaction ID">
+    <input id="bank" placeholder="Bank Name">
+
+    <button onclick="confirmPayment()">Confirm Payment</button>
+    <button onclick="restartTimer()">Re-Pay</button>
+  </div>
+</div>
+
+<script>
+let timeLeft = 120;
+let timerInterval;
+
+// SAVE BUTTON
+function saveDetails(){
+  let name = document.getElementById("name").value.trim();
+  let type = document.getElementById("websiteType").value;
+  let phone = document.getElementById("phone").value.trim();
+  let email = document.getElementById("email").value.trim();
+
+  if(name=="" || type=="" || phone=="" || email==""){
+    alert("Please fill all details correctly");
+    return;
+  }
+
+  document.getElementById("nextBtn").disabled = false;
+  alert("Details saved successfully. Click Next.");
+}
+
+// OPEN QR POPUP
+function openQR(){
+  document.getElementById("qrPopup").style.display="block";
+  startTimer();
+}
+
+// TIMER
+function startTimer(){
+  timeLeft = 120;
+  clearInterval(timerInterval);
+
+  timerInterval = setInterval(()=>{
+    let m = Math.floor(timeLeft/60);
+    let s = timeLeft%60;
+    document.getElementById("timer").innerText =
+      `0${m}:${s<10?'0':''}${s}`;
+    timeLeft--;
+
+    if(timeLeft < 0){
+      clearInterval(timerInterval);
+      document.getElementById("timer").innerText="QR Expired";
+    }
+  },1000);
+}
+
+// REPAY
+function restartTimer(){
+  startTimer();
+}
+
+// PAYMENT CONFIRM
+function confirmPayment(){
+  let txn = document.getElementById("txn").value.trim();
+  let bank = document.getElementById("bank").value.trim();
+  let name = document.getElementById("name").value;
+
+  if(txn=="" || bank==""){
+    alert("Enter transaction details");
+    return;
+  }
+
+  alert(`Thanks ${name} for payment with Loying Tech Service`);
+  document.getElementById("qrPopup").style.display="none";
+}
+</script>
+
+</body>
+</html>
