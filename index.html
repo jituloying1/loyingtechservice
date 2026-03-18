@@ -1,97 +1,173 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Car Washing Center</title>
+<title>Car Wash Pro System</title>
+
 <style>
 body{
   font-family:Arial;
-  background:#f4f4f4;
+  background:linear-gradient(to right,#1e3c72,#2a5298);
+  color:white;
 }
+
 .container{
-  width:400px;
+  width:420px;
   margin:auto;
   background:white;
+  color:black;
   padding:20px;
   margin-top:30px;
-  border-radius:10px;
-  box-shadow:0 0 10px gray;
+  border-radius:15px;
+  box-shadow:0 0 20px rgba(0,0,0,0.3);
 }
+
+h2{
+  text-align:center;
+}
+
 input,select,button{
   width:100%;
   padding:10px;
   margin-top:10px;
+  border-radius:5px;
 }
+
+button{
+  background:#2a5298;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1e3c72;
+}
+
+.dashboard{
+  display:flex;
+  justify-content:space-around;
+  margin-top:20px;
+}
+
+.card{
+  background:white;
+  color:black;
+  padding:10px;
+  border-radius:10px;
+  width:30%;
+  text-align:center;
+}
+
 table{
-  width:90%;
+  width:95%;
   margin:auto;
   margin-top:30px;
   border-collapse:collapse;
+  background:white;
+  color:black;
 }
-td,th{
-  border:1px solid black;
+
+th,td{
   padding:8px;
+  border:1px solid gray;
 }
 </style>
 </head>
 
 <body>
 
+<div class="dashboard">
+  <div class="card">💰 Income<br><span id="income">0</span></div>
+  <div class="card">🚗 Cars<br><span id="cars">0</span></div>
+  <div class="card">⏳ Pending<br><span id="pending">0</span></div>
+</div>
+
 <div class="container">
-<h2>🚗 Car Wash Entry</h2>
+<h2>🚗 Booking Entry</h2>
 
 <form id="form">
+
 <input type="text" name="name" placeholder="Customer Name" required>
 <input type="text" name="phone" placeholder="Phone" required>
-<input type="text" name="car" placeholder="Car Number" required>
+<input type="text" name="address" placeholder="Address">
+
+<input type="text" name="car" placeholder="Vehicle Number" required>
+<input type="text" name="model" placeholder="Vehicle Model">
 
 <select name="type">
-<option>Car</option>
 <option>Bike</option>
+<option>Car</option>
 <option>SUV</option>
+<option>Truck</option>
 </select>
 
+<label>Select Service</label>
 <select name="service">
-<option>Wash</option>
-<option>Full Service</option>
-<option>Polish</option>
+<option value="200">Basic Wash - ₹200</option>
+<option value="300">Foam Wash - ₹300</option>
+<option value="500">Interior Cleaning - ₹500</option>
+<option value="700">Full Service - ₹700</option>
 </select>
 
-<input type="number" name="price" placeholder="Price" required>
+<input type="date" name="date">
+<input type="time" name="time">
+
+<select name="payment">
+<option>Cash</option>
+<option>UPI</option>
+<option>Card</option>
+</select>
+
+<input type="number" id="price" name="price" placeholder="Total Price">
 
 <button type="submit">Save Booking</button>
+<button type="button" onclick="printBill()">🧾 Print Bill</button>
+
 </form>
 </div>
 
-<table id="dataTable">
+<table id="table">
 <tr>
 <th>Name</th>
-<th>Phone</th>
 <th>Car</th>
 <th>Service</th>
 <th>Price</th>
+<th>Status</th>
 </tr>
 </table>
 
 <script>
-const scriptURL = "YOUR_GOOGLE_SCRIPT_URL";
-
 const form = document.getElementById("form");
+const price = document.getElementById("price");
 
-form.addEventListener("submit", e=>{
+form.service.addEventListener("change", function(){
+  price.value = this.value;
+});
+
+form.addEventListener("submit", function(e){
   e.preventDefault();
 
   const data = new FormData(form);
 
-  fetch(scriptURL,{
-    method:"POST",
-    body:data
-  })
-  .then(res=>res.text())
-  .then(()=>{
-    alert("Saved Successfully!");
-    form.reset();
-  })
+  const row = `
+    <tr>
+      <td>${data.get("name")}</td>
+      <td>${data.get("car")}</td>
+      <td>${data.get("service")}</td>
+      <td>${data.get("price")}</td>
+      <td>Pending</td>
+    </tr>
+  `;
+
+  document.getElementById("table").innerHTML += row;
+
+  alert("Booking Added!");
+  form.reset();
 });
+
+function printBill(){
+  window.print();
+}
 </script>
 
 </body>
